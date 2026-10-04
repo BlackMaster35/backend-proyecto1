@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'main',
+    'hotel',
 ]
 
 MIDDLEWARE = [
@@ -90,7 +90,7 @@ if DB_ENGINE == 'django.db.backends.sqlite3':
         }
     }
 else:
-    # Ejemplo: MySQL con la base y el usuario creados en script_bd.sql
+    # Ejemplo: MySQL con la base y el usuario creados en sql/script_bd.sql
     DATABASES = {
         'default': {
             'ENGINE': DB_ENGINE,
