@@ -16,10 +16,17 @@ python -m venv .venv
 .venv\Scripts\activate          # Windows
 # source .venv/bin/activate     # Linux/Mac
 pip install -r requirements.txt
+copy .env.example .env          # Windows (luego editar los valores)
+# cp .env.example .env          # Linux/Mac
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
 ```
+
+## Variables de entorno
+Los datos sensibles (`SECRET_KEY`, `DEBUG`, credenciales de base de datos) se leen
+desde el archivo `.env` con `python-dotenv`. Ese archivo **no se sube** al repositorio
+(está en `.gitignore`); se incluye `.env.example` como plantilla.
 
 ## URLs
 | URL | Descripción |
