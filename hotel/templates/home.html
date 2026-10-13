@@ -1,15 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Sistema de Hotel</title>
-</head>
-<body>
-    <h1>Sistema de Hotel</h1>
-    <p>API REST con Django REST Framework.</p>
-    <ul>
-        <li><a href="/api/">API REST</a></li>
-        <li><a href="/admin/">Panel de administración</a></li>
-    </ul>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Bienvenido | Sistema de Hotel{% endblock %}
+{% block content %}
+<div class="tarjeta">
+    <h1>Bienvenido al Sistema de Hotel</h1>
+    <p>Plataforma para gestionar hoteles, habitaciones, huéspedes, reservas y pagos.</p>
+    <p><em>Esta es la única vista pública del sistema.</em></p>
+    {% if user.is_authenticated %}
+        <p>Has iniciado sesión como <strong>{{ user.username }}</strong>.</p>
+        <a class="btn" href="{% url 'dashboard' %}">Ir al dashboard</a>
+    {% else %}
+        <p>Para acceder a las funcionalidades debes iniciar sesión.</p>
+        <a class="btn" href="{% url 'login' %}">Iniciar sesión</a>
+    {% endif %}
+</div>
+{% endblock %}

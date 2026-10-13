@@ -1,42 +1,13 @@
 -- =====================================================================
--- Evaluación 2 - Programación Backend (Django + Django REST Framework)
--- Proyecto 26: Sistema de Hotel
--- Autor: Sebastián Valderrama Concha - INACAP, Analista Programador
--- Motor: MySQL 8
---
--- 1) Creación de la base de datos
--- 2) Creación de un usuario específico para la base de datos
--- 3) Asignación de permisos de esa base de datos a ese usuario
--- 4) Creación de las tablas del modelo de datos
+-- Proyecto 26: Sistema de Hotel - TABLAS DE REFERENCIA (MySQL 8)
+-- Script OPCIONAL: muestra en SQL las tablas equivalentes a hotel/models.py.
+-- En el proyecto las tablas se crean con:  python manage.py migrate
+-- Ejecutar solo después de los scripts 01, 02 y 03.
 -- =====================================================================
 
 
 -- ---------------------------------------------------------------------
--- 1) CREACIÓN DE LA BASE DE DATOS
--- ---------------------------------------------------------------------
-CREATE DATABASE IF NOT EXISTS sistema_hotel
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
-
-
--- ---------------------------------------------------------------------
--- 2) CREACIÓN DEL USUARIO ESPECÍFICO
--- ---------------------------------------------------------------------
-CREATE USER IF NOT EXISTS 'hotel_user'@'localhost'
-    IDENTIFIED BY 'Hotel2026!';
-
-
--- ---------------------------------------------------------------------
--- 3) ASIGNACIÓN DE PERMISOS
---    El usuario solo tiene permisos sobre la base sistema_hotel.
--- ---------------------------------------------------------------------
-GRANT ALL PRIVILEGES ON sistema_hotel.* TO 'hotel_user'@'localhost';
-
-FLUSH PRIVILEGES;
-
-
--- ---------------------------------------------------------------------
--- 4) TABLAS DEL MODELO DE DATOS (equivalentes a hotel/models.py)
+-- TABLAS DEL MODELO DE DATOS (equivalentes a hotel/models.py)
 -- ---------------------------------------------------------------------
 USE sistema_hotel;
 
@@ -147,5 +118,4 @@ CREATE TABLE IF NOT EXISTS hotel_pago (
 -- ---------------------------------------------------------------------
 -- VERIFICACIÓN
 -- ---------------------------------------------------------------------
-SHOW GRANTS FOR 'hotel_user'@'localhost';
 SHOW TABLES;

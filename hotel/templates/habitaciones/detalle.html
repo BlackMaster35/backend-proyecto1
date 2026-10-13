@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Habitación {{ habitacion.numero }} | Sistema de Hotel{% endblock %}
+{% block content %}
+<div class="tarjeta">
+    <h1>Habitación {{ habitacion.numero }}</h1>
+    <p>Vista protegida basada en clases (<code>LoginRequiredMixin</code> + <code>DetailView</code>).</p>
+    <table>
+        <tr><th>Hotel</th><td>{{ habitacion.hotel }}</td></tr>
+        <tr><th>Piso</th><td>{{ habitacion.piso }}</td></tr>
+        <tr><th>Tipo</th><td>{{ habitacion.tipo }} ({{ habitacion.tipo.capacidad }} personas)</td></tr>
+        <tr><th>Precio por noche</th><td>${{ habitacion.tipo.precio_noche }}</td></tr>
+        <tr><th>Estado</th><td>{{ habitacion.get_estado_display }}</td></tr>
+    </table>
+    <a href="{% url 'lista_habitaciones' %}">← Volver</a>
+</div>
+{% endblock %}

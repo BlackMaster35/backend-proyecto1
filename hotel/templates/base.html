@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Sistema de Hotel{% endblock %}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f6f8; color: #222; }
+        nav { background: #1f3a5f; color: #fff; padding: 12px 24px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+        nav a { color: #fff; text-decoration: none; }
+        nav .usuario { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+        nav button { background: #c0392b; color: #fff; border: 0; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
+        main { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+        .tarjeta { background: #fff; border-radius: 6px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+        .numero { font-size: 2em; font-weight: bold; color: #1f3a5f; }
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        th, td { padding: 8px; border-bottom: 1px solid #ddd; text-align: left; }
+        th { background: #e9eef4; }
+        .etiqueta { font-size: .8em; padding: 2px 8px; border-radius: 10px; background: #e9eef4; }
+        .error { color: #c0392b; }
+        .btn { display: inline-block; background: #1f3a5f; color: #fff; padding: 8px 16px; border-radius: 4px; text-decoration: none; border: 0; cursor: pointer; }
+        input { padding: 8px; width: 100%; box-sizing: border-box; margin: 4px 0 12px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}"><strong>Sistema de Hotel</strong></a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'lista_reservas' %}">Reservas</a>
+            <a href="{% url 'lista_habitaciones' %}">Habitaciones</a>
+            <a href="{% url 'lista_huespedes' %}">Huéspedes</a>
+            <a href="/api/">API</a>
+            <span class="usuario">
+                <a href="{% url 'perfil' %}">👤 {{ user.username }}</a>
+                {# En Django 5+ el logout se hace por POST #}
+                <form method="post" action="{% url 'logout' %}" style="margin:0">
+                    {% csrf_token %}
+                    <button type="submit">Cerrar sesión</button>
+                </form>
+            </span>
+        {% else %}
+            <span class="usuario"><a href="{% url 'login' %}">Iniciar sesión</a></span>
+        {% endif %}
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -140,6 +140,28 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 
+# Autenticación
+# https://docs.djangoproject.com/en/6.1/topics/auth/default/
+
+LOGIN_URL = 'login'                 # adonde @login_required y LoginRequiredMixin redirigen
+LOGIN_REDIRECT_URL = 'dashboard'    # destino después de iniciar sesión
+LOGOUT_REDIRECT_URL = 'home'        # destino después de cerrar sesión
+
+
+# Django REST Framework
+# La API usa la misma sesión del login y exige usuario autenticado en todos los endpoints.
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 

@@ -1,10 +1,11 @@
 # Sistema de Hotel — API REST con Django + Django REST Framework
 
-**Proyecto 26: Sistema de Hotel** — Evaluación 2, Programación Backend (INACAP 2026).
+**Proyecto 26: Sistema de Hotel** — Evaluación 3, Programación Backend (INACAP 2026).
 
 API REST que digitaliza la gestión de reservas hoteleras: hoteles, habitaciones,
 huéspedes, recepcionistas, reservas y pagos, con CRUD completo
-(`GET`, `POST`, `PUT`, `PATCH`, `DELETE`).
+(`GET`, `POST`, `PUT`, `PATCH`, `DELETE`), más autenticación de usuarios y
+control de acceso entre vistas públicas y privadas.
 
 ## Modelo de datos
 | Modelo | Campos principales | Relaciones |
@@ -37,23 +38,59 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-## Base de datos
-El script `sql/script_bd.sql` (MySQL) crea:
-1. La base de datos `sistema_hotel`.
-2. El usuario `hotel_user`.
-3. Los permisos de ese usuario sobre esa base.
-4. Las tablas del modelo de datos.
+## Base de datos (MySQL)
+Scripts en `sql/`, ejecutar en orden como `root`:
+
+| Script | Qué hace |
+|--------|----------|
+| `01_crear_base_datos.sql` | Crea la base `sistema_hotel` (utf8mb4) |
+| `02_crear_usuario.sql` | Crea el usuario de aplicación `hotel_user` |
+| `03_asignar_permisos.sql` | Da a `hotel_user` permisos solo sobre `sistema_hotel` |
+| `04_tablas_referencia.sql` | *(Opcional)* tablas en SQL equivalentes a los modelos. No se ejecuta si se usa `migrate` |
+
+```bash
+mysql -u root -p < sql/01_crear_base_datos.sql
+mysql -u root -p < sql/02_crear_usuario.sql
+mysql -u root -p < sql/03_asignar_permisos.sql
+python manage.py migrate
+```
 
 ## Variables de entorno
 Los datos sensibles (`SECRET_KEY`, `DEBUG`, conexión a la base de datos) se leen
 desde el archivo `.env` con `python-dotenv`. Ese archivo **no se sube** al repositorio
 (está en `.gitignore`); se incluye `.env.example` como plantilla.
 
-## Endpoints
+## Autenticación y control de acceso
+Se usa el sistema de autenticación nativo de Django (`django.contrib.auth`).
+
+| URL | Vista | Tipo | Acceso |
+|-----|-------|------|--------|
+| `/` | `home` | FBV | **Pública** (única vista pública) |
+| `/login/` | `LoginView` | CBV nativa | Formulario de inicio de sesión |
+| `/logout/` | `LogoutView` | CBV nativa | Cierra sesión (por `POST`, botón del menú) |
+| `/dashboard/` | `dashboard` | FBV + `@login_required` | Privada |
+| `/reservas/` | `lista_reservas` | FBV + `@login_required` | Privada |
+| `/reservas/<id>/` | `detalle_reserva` | FBV + `@login_required` | Privada |
+| `/perfil/` | `PerfilView` | CBV (`TemplateView`) + `LoginRequiredMixin` | Privada |
+| `/habitaciones/` | `HabitacionListView` | CBV (`ListView`) + `LoginRequiredMixin` | Privada |
+| `/habitaciones/<id>/` | `HabitacionDetailView` | CBV (`DetailView`) + `LoginRequiredMixin` | Privada |
+| `/huespedes/` | `HuespedListView` | CBV (`ListView`) + `LoginRequiredMixin` | Privada |
+| `/api/...` | `ModelViewSet` | DRF + `IsAuthenticated` | Privada |
+
+Comportamiento:
+- Usuario **no autenticado** en una vista HTML privada → `302` a `/login/?next=<ruta>` con mensaje de acceso denegado.
+- Usuario **no autenticado** en la API → `403 Forbidden` (JSON).
+- Login correcto → `302` a `/dashboard/` (`LOGIN_REDIRECT_URL`).
+- Logout → `302` a `/` (`LOGOUT_REDIRECT_URL`).
+
+Crear un usuario para iniciar sesión:
+```bash
+python manage.py createsuperuser
+```
+
+## Endpoints de la API
 | URL | Descripción |
 |-----|-------------|
-| `/` | Página de inicio |
-| `/admin/` | Panel de administración |
 | `/api/` | Raíz de la API |
 | `/api/hoteles/` | CRUD de hoteles |
 | `/api/tipos-habitacion/` | CRUD de tipos de habitación |
@@ -65,12 +102,14 @@ desde el archivo `.env` con `python-dotenv`. Ese archivo **no se sube** al repos
 
 En `/api/<recurso>/`: `GET` (listar) y `POST` (crear).
 En `/api/<recurso>/<id>/`: `GET` (detalle), `PUT` / `PATCH` (actualizar) y `DELETE` (eliminar).
+Todos requieren sesión iniciada (o Basic Auth).
 
 ## Estructura
 ```
 core/          configuración del proyecto (settings, urls)
-hotel/         app: models, admin, serializers, views (ModelViewSet), urls (Router)
-sql/           script SQL de base de datos, usuario y permisos
+hotel/         app: models, admin, serializers, views (FBV, CBV y ModelViewSet), urls (Router)
+hotel/templates/  base, home, login, dashboard, perfil, reservas, habitaciones, huespedes
+sql/           scripts SQL: base de datos, usuario y permisos
 .env.example   plantilla de variables de entorno
 requirements.txt
 ```

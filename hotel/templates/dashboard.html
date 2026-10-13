@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Sistema de Hotel{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<p>Hola, <strong>{{ user.username }}</strong>. Vista protegida basada en funciones (<code>@login_required</code>).</p>
+
+<div class="grid">
+    <div class="tarjeta"><div class="numero">{{ total_hoteles }}</div>Hoteles</div>
+    <div class="tarjeta"><div class="numero">{{ total_habitaciones }}</div>Habitaciones</div>
+    <div class="tarjeta"><div class="numero">{{ habitaciones_disponibles }}</div>Disponibles</div>
+    <div class="tarjeta"><div class="numero">{{ total_huespedes }}</div>Huéspedes</div>
+    <div class="tarjeta"><div class="numero">{{ total_reservas }}</div>Reservas</div>
+    <div class="tarjeta"><div class="numero">{{ reservas_pendientes }}</div>Pendientes</div>
+</div>
+
+<div class="tarjeta">
+    <h2>Últimas reservas</h2>
+    <table>
+        <tr><th>#</th><th>Huésped</th><th>Habitación</th><th>Entrada</th><th>Estado</th></tr>
+        {% for r in ultimas_reservas %}
+        <tr>
+            <td><a href="{% url 'detalle_reserva' r.pk %}">{{ r.pk }}</a></td>
+            <td>{{ r.huesped }}</td><td>{{ r.habitacion }}</td>
+            <td>{{ r.fecha_entrada }}</td><td><span class="etiqueta">{{ r.get_estado_display }}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No hay reservas registradas.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

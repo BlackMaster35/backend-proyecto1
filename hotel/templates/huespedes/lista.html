@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Huéspedes | Sistema de Hotel{% endblock %}
+{% block content %}
+<h1>Huéspedes</h1>
+<p>Vista protegida basada en clases (<code>LoginRequiredMixin</code> + <code>ListView</code>).</p>
+<table>
+    <tr><th>RUT</th><th>Nombre</th><th>Email</th><th>Teléfono</th></tr>
+    {% for h in huespedes %}
+    <tr><td>{{ h.rut }}</td><td>{{ h }}</td><td>{{ h.email }}</td><td>{{ h.telefono|default:"—" }}</td></tr>
+    {% empty %}
+    <tr><td colspan="4">No hay huéspedes registrados.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

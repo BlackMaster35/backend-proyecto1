@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Reserva #{{ reserva.pk }} | Sistema de Hotel{% endblock %}
+{% block content %}
+<div class="tarjeta">
+    <h1>Reserva #{{ reserva.pk }}</h1>
+    <p>Vista protegida basada en funciones (<code>@login_required</code>).</p>
+    <table>
+        <tr><th>Huésped</th><td>{{ reserva.huesped }}</td></tr>
+        <tr><th>Habitación</th><td>{{ reserva.habitacion }}</td></tr>
+        <tr><th>Recepcionista</th><td>{{ reserva.recepcionista|default:"—" }}</td></tr>
+        <tr><th>Entrada / salida</th><td>{{ reserva.fecha_entrada }} → {{ reserva.fecha_salida }}</td></tr>
+        <tr><th>Huéspedes</th><td>{{ reserva.cantidad_huespedes }}</td></tr>
+        <tr><th>Estado</th><td>{{ reserva.get_estado_display }}</td></tr>
+        <tr><th>Total</th><td>${{ reserva.total }}</td></tr>
+    </table>
+    <h2>Pagos</h2>
+    <ul>
+        {% for p in reserva.pagos.all %}
+            <li>${{ p.monto }} — {{ p.get_metodo_display }} ({{ p.fecha_pago|date:"d-m-Y H:i" }})</li>
+        {% empty %}
+            <li>Sin pagos registrados.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'lista_reservas' %}">← Volver</a>
+</div>
+{% endblock %}
